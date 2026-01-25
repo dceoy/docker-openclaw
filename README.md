@@ -106,6 +106,26 @@ docker compose --profile sandbox up -d clawdbot-sandbox
 docker compose build clawdbot-gateway
 ```
 
+### Build with Docker Buildx Bake
+
+Build the default gateway image:
+
+```bash
+docker buildx bake
+```
+
+Build all images (gateway, sandbox, browser):
+
+```bash
+docker buildx bake all
+```
+
+Override versions with environment variables:
+
+```bash
+CLAWDBOT_VERSION=1.0.0 CLAWDBOT_NODE_VERSION=22 docker buildx bake all
+```
+
 ### Build all images
 
 ```bash
