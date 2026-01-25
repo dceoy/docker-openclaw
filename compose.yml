@@ -1,0 +1,133 @@
+services:
+  clawdbot-gateway:
+    container_name: clawdbot-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: clawdbot
+      args:
+        NODE_VERSION: ${CLAWDBOT_NODE_VERSION:-22}
+        CLAWDBOT_VERSION: ${CLAWDBOT_VERSION:-latest}
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${CLAWDBOT_IMAGE:-clawdbot}:${CLAWDBOT_VERSION:-latest}
+    hostname: clawdbot-gateway
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      NODE_ENV: production
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+    volumes:
+      - ${CLAWDBOT_CONFIG_DIR:-./.clawdbot}:/home/node/.clawdbot
+      - ${CLAWDBOT_WORKSPACE_DIR:-./workspace}:/workspace
+    ports:
+      - "${CLAWDBOT_GATEWAY_PORT:-18789}:18789"
+      - "${CLAWDBOT_GATEWAY_WS_PORT:-18790}:18790"
+    restart: unless-stopped
+    command: ["clawdbot", "gateway", "--bind", "0.0.0.0"]
+
+  clawdbot-cli:
+    container_name: clawdbot-cli
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: clawdbot
+      args:
+        NODE_VERSION: ${CLAWDBOT_NODE_VERSION:-22}
+        CLAWDBOT_VERSION: ${CLAWDBOT_VERSION:-latest}
+    image: ${CLAWDBOT_IMAGE:-clawdbot}:${CLAWDBOT_VERSION:-latest}
+    hostname: clawdbot-cli
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+    volumes:
+      - ${CLAWDBOT_CONFIG_DIR:-./.clawdbot}:/home/node/.clawdbot
+      - ${CLAWDBOT_WORKSPACE_DIR:-./workspace}:/workspace
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+    entrypoint: ["/usr/bin/tini", "--"]
+    command: ["clawdbot"]
+
+  clawdbot-sandbox:
+    container_name: clawdbot-sandbox
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: clawdbot-sandbox
+      args:
+        NODE_VERSION: ${CLAWDBOT_NODE_VERSION:-22}
+        CLAWDBOT_VERSION: ${CLAWDBOT_VERSION:-latest}
+        CLAWDBOT_DOCKER_APT_PACKAGES: ${CLAWDBOT_DOCKER_APT_PACKAGES:-}
+    image: ${CLAWDBOT_IMAGE:-clawdbot}:${CLAWDBOT_VERSION:-latest}-sandbox
+    hostname: clawdbot-sandbox
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      NODE_ENV: production
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+    volumes:
+      - ${CLAWDBOT_CONFIG_DIR:-./.clawdbot}:/home/node/.clawdbot
+      - ${CLAWDBOT_WORKSPACE_DIR:-./workspace}:/workspace
+    ports:
+      - "${CLAWDBOT_SANDBOX_PORT:-18791}:18789"
+      - "${CLAWDBOT_SANDBOX_WS_PORT:-18792}:18790"
+    restart: unless-stopped
+    profiles:
+      - sandbox
+    command: ["clawdbot", "gateway", "--bind", "0.0.0.0"]
+
+  clawdbot-browser:
+    container_name: clawdbot-browser
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: clawdbot-browser
+      args:
+        NODE_VERSION: ${CLAWDBOT_NODE_VERSION:-22}
+        CLAWDBOT_VERSION: ${CLAWDBOT_VERSION:-latest}
+    image: ${CLAWDBOT_IMAGE:-clawdbot}:${CLAWDBOT_VERSION:-latest}-browser
+    hostname: clawdbot-browser
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      NODE_ENV: production
+      CHROME_PATH: /usr/bin/chromium
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+    volumes:
+      - ${CLAWDBOT_CONFIG_DIR:-./.clawdbot}:/home/node/.clawdbot
+      - ${CLAWDBOT_WORKSPACE_DIR:-./workspace}:/workspace
+    ports:
+      - "${CLAWDBOT_BROWSER_PORT:-18793}:18789"
+      - "${CLAWDBOT_BROWSER_WS_PORT:-18794}:18790"
+    restart: unless-stopped
+    profiles:
+      - browser
+    security_opt:
+      - seccomp=unconfined
+    command: ["clawdbot", "gateway", "--bind", "0.0.0.0"]
