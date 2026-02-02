@@ -70,53 +70,53 @@ RUN \
 
 RUN \
     useradd -m -s /bin/bash -d /home/node node \
-    && mkdir -p /home/node/.clawdbot /workspace \
+    && mkdir -p /home/node/.openclaw /workspace \
     && chown -R node:node /home/node /workspace
 
 
-FROM base AS clawdbot
+FROM base AS openclaw
 
-ARG CLAWDBOT_VERSION=latest
+ARG OPENCLAW_VERSION=latest
 
 RUN \
-    npm install -g "clawdbot@${CLAWDBOT_VERSION}" \
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
     && npm cache clean --force
 
 USER node
 WORKDIR /workspace
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["clawdbot", "gateway"]
+CMD ["openclaw", "gateway"]
 
 
-FROM base AS clawdbot-sandbox
+FROM base AS openclaw-sandbox
 
-ARG CLAWDBOT_VERSION=latest
-ARG CLAWDBOT_DOCKER_APT_PACKAGES=""
+ARG OPENCLAW_VERSION=latest
+ARG OPENCLAW_DOCKER_APT_PACKAGES=""
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    if [ -n "${CLAWDBOT_DOCKER_APT_PACKAGES}" ]; then \
+    if [ -n "${OPENCLAW_DOCKER_APT_PACKAGES}" ]; then \
         apt-get -y update \
         && apt-get -y install --no-install-recommends --no-install-suggests \
-            ${CLAWDBOT_DOCKER_APT_PACKAGES}; \
+            ${OPENCLAW_DOCKER_APT_PACKAGES}; \
     fi
 
 RUN \
-    npm install -g "clawdbot@${CLAWDBOT_VERSION}" \
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
     && npm cache clean --force
 
 USER node
 WORKDIR /workspace
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["clawdbot", "gateway"]
+CMD ["openclaw", "gateway"]
 
 
-FROM base AS clawdbot-browser
+FROM base AS openclaw-browser
 
-ARG CLAWDBOT_VERSION=latest
+ARG OPENCLAW_VERSION=latest
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -133,7 +133,7 @@ RUN \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    npm install -g "clawdbot@${CLAWDBOT_VERSION}" \
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
     && npm cache clean --force
 
 ENV CHROME_PATH=/usr/bin/chromium \
@@ -144,4 +144,4 @@ USER node
 WORKDIR /workspace
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["clawdbot", "gateway"]
+CMD ["openclaw", "gateway"]
