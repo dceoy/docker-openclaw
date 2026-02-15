@@ -23,37 +23,37 @@ group "all" {
 }
 
 target "openclaw" {
-  context = "."
+  context    = "."
   dockerfile = "Dockerfile"
-  target = "openclaw"
-  platforms = ["linux/amd64", "linux/arm64"]
+  target     = "openclaw"
+  platforms  = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
+    NODE_VERSION     = "${OPENCLAW_NODE_VERSION}"
     OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
   }
   tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}"]
 }
 
 target "openclaw-sandbox" {
-  context = "."
+  context    = "."
   dockerfile = "Dockerfile"
-  target = "openclaw-sandbox"
-  platforms = ["linux/amd64", "linux/arm64"]
+  target     = "openclaw-sandbox"
+  platforms  = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
-    OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
+    NODE_VERSION                 = "${OPENCLAW_NODE_VERSION}"
+    OPENCLAW_VERSION             = "${OPENCLAW_VERSION}"
     OPENCLAW_DOCKER_APT_PACKAGES = "${OPENCLAW_DOCKER_APT_PACKAGES}"
   }
   tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}-sandbox"]
 }
 
 target "openclaw-browser" {
-  context = "."
+  context    = "."
   dockerfile = "Dockerfile"
-  target = "openclaw-browser"
-  platforms = ["linux/amd64", "linux/arm64"]
+  target     = "openclaw-browser"
+  platforms  = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
+    NODE_VERSION     = "${OPENCLAW_NODE_VERSION}"
     OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
   }
   tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}-browser"]
