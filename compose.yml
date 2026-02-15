@@ -6,12 +6,12 @@ services:
       dockerfile: Dockerfile
       target: openclaw
       args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
+        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-${CLAWDBOT_NODE_VERSION:-22}}
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
       platforms:
         - linux/amd64
         - linux/arm64
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}
+    image: ${OPENCLAW_IMAGE:-${CLAWDBOT_IMAGE:-openclaw}}:${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
     hostname: openclaw-gateway
     environment:
       HOME: /home/node
@@ -24,11 +24,11 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+      - ${OPENCLAW_CONFIG_DIR:-${CLAWDBOT_CONFIG_DIR:-./.openclaw}}:/home/node/.openclaw
+      - ${OPENCLAW_WORKSPACE_DIR:-${CLAWDBOT_WORKSPACE_DIR:-./workspace}}:/workspace
     ports:
-      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
-      - "${OPENCLAW_GATEWAY_WS_PORT:-18790}:18790"
+      - "${OPENCLAW_GATEWAY_PORT:-${CLAWDBOT_GATEWAY_PORT:-18789}}:18789"
+      - "${OPENCLAW_GATEWAY_WS_PORT:-${CLAWDBOT_GATEWAY_WS_PORT:-18790}}:18790"
     restart: unless-stopped
     command: ["openclaw", "gateway", "--bind", "0.0.0.0"]
 
@@ -39,9 +39,9 @@ services:
       dockerfile: Dockerfile
       target: openclaw
       args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}
+        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-${CLAWDBOT_NODE_VERSION:-22}}
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
+    image: ${OPENCLAW_IMAGE:-${CLAWDBOT_IMAGE:-openclaw}}:${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
     hostname: openclaw-cli
     environment:
       HOME: /home/node
@@ -53,8 +53,8 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+      - ${OPENCLAW_CONFIG_DIR:-${CLAWDBOT_CONFIG_DIR:-./.openclaw}}:/home/node/.openclaw
+      - ${OPENCLAW_WORKSPACE_DIR:-${CLAWDBOT_WORKSPACE_DIR:-./workspace}}:/workspace
     stdin_open: true
     tty: true
     profiles:
@@ -69,10 +69,10 @@ services:
       dockerfile: Dockerfile
       target: openclaw-sandbox
       args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-        OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}-sandbox
+        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-${CLAWDBOT_NODE_VERSION:-22}}
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
+        OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-${CLAWDBOT_DOCKER_APT_PACKAGES:-}}
+    image: ${OPENCLAW_IMAGE:-${CLAWDBOT_IMAGE:-openclaw}}:${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}-sandbox
     hostname: openclaw-sandbox
     environment:
       HOME: /home/node
@@ -85,11 +85,11 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+      - ${OPENCLAW_CONFIG_DIR:-${CLAWDBOT_CONFIG_DIR:-./.openclaw}}:/home/node/.openclaw
+      - ${OPENCLAW_WORKSPACE_DIR:-${CLAWDBOT_WORKSPACE_DIR:-./workspace}}:/workspace
     ports:
-      - "${OPENCLAW_SANDBOX_PORT:-18791}:18789"
-      - "${OPENCLAW_SANDBOX_WS_PORT:-18792}:18790"
+      - "${OPENCLAW_SANDBOX_PORT:-${CLAWDBOT_SANDBOX_PORT:-18791}}:18789"
+      - "${OPENCLAW_SANDBOX_WS_PORT:-${CLAWDBOT_SANDBOX_WS_PORT:-18792}}:18790"
     restart: unless-stopped
     profiles:
       - sandbox
@@ -102,9 +102,9 @@ services:
       dockerfile: Dockerfile
       target: openclaw-browser
       args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}-browser
+        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-${CLAWDBOT_NODE_VERSION:-22}}
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}
+    image: ${OPENCLAW_IMAGE:-${CLAWDBOT_IMAGE:-openclaw}}:${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}-browser
     hostname: openclaw-browser
     environment:
       HOME: /home/node
@@ -120,11 +120,11 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+      - ${OPENCLAW_CONFIG_DIR:-${CLAWDBOT_CONFIG_DIR:-./.openclaw}}:/home/node/.openclaw
+      - ${OPENCLAW_WORKSPACE_DIR:-${CLAWDBOT_WORKSPACE_DIR:-./workspace}}:/workspace
     ports:
-      - "${OPENCLAW_BROWSER_PORT:-18793}:18789"
-      - "${OPENCLAW_BROWSER_WS_PORT:-18794}:18790"
+      - "${OPENCLAW_BROWSER_PORT:-${CLAWDBOT_BROWSER_PORT:-18793}}:18789"
+      - "${OPENCLAW_BROWSER_WS_PORT:-${CLAWDBOT_BROWSER_WS_PORT:-18794}}:18790"
     restart: unless-stopped
     profiles:
       - browser

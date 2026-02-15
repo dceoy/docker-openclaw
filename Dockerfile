@@ -80,8 +80,11 @@ ARG OPENCLAW_VERSION=latest
 ARG CLAWDBOT_VERSION
 
 RUN \
-    npm install -g "openclaw@${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && npm cache clean --force
+    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
+    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
+    && npm cache clean --force \
+    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
+    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
 
 USER node
 WORKDIR /workspace
@@ -108,8 +111,11 @@ RUN \
     fi
 
 RUN \
-    npm install -g "openclaw@${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && npm cache clean --force
+    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
+    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
+    && npm cache clean --force \
+    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
+    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
 
 USER node
 WORKDIR /workspace
@@ -138,8 +144,11 @@ RUN \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    npm install -g "openclaw@${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && npm cache clean --force
+    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
+    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
+    && npm cache clean --force \
+    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
+    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
 
 ENV CHROME_PATH=/usr/bin/chromium \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \

@@ -129,40 +129,40 @@ docker compose --profile cli --profile sandbox --profile browser build
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OPENCLAW_VERSION` | `latest` | OpenClaw version to install |
-| `OPENCLAW_NODE_VERSION` | `22` | Node.js version |
-| `OPENCLAW_IMAGE` | `openclaw` | Docker image name |
-| `OPENCLAW_CONFIG_DIR` | `./.openclaw` | Configuration directory |
-| `OPENCLAW_WORKSPACE_DIR` | `./workspace` | Workspace directory |
-| `OPENCLAW_GATEWAY_PORT` | `18789` | Gateway HTTP port |
-| `OPENCLAW_GATEWAY_WS_PORT` | `18790` | Gateway WebSocket port |
-| `OPENCLAW_DOCKER_APT_PACKAGES` | - | Additional apt packages for sandbox builds |
-| `CLAUDE_AI_SESSION_KEY` | - | Claude AI session key |
-| `CLAUDE_WEB_SESSION_KEY` | - | Claude web session key |
-| `CLAUDE_WEB_COOKIE` | - | Claude web cookie |
-| `OPENAI_API_KEY` | - | OpenAI API key (optional) |
-| `ANTHROPIC_API_KEY` | - | Anthropic API key (optional) |
-| `ELEVENLABS_API_KEY` | - | ElevenLabs API key (optional) |
+| Variable                       | Default       | Description                                |
+| ------------------------------ | ------------- | ------------------------------------------ |
+| `OPENCLAW_VERSION`             | `latest`      | OpenClaw version to install                |
+| `OPENCLAW_NODE_VERSION`        | `22`          | Node.js version                            |
+| `OPENCLAW_IMAGE`               | `openclaw`    | Docker image name                          |
+| `OPENCLAW_CONFIG_DIR`          | `./.openclaw` | Configuration directory                    |
+| `OPENCLAW_WORKSPACE_DIR`       | `./workspace` | Workspace directory                        |
+| `OPENCLAW_GATEWAY_PORT`        | `18789`       | Gateway HTTP port                          |
+| `OPENCLAW_GATEWAY_WS_PORT`     | `18790`       | Gateway WebSocket port                     |
+| `OPENCLAW_DOCKER_APT_PACKAGES` | -             | Additional apt packages for sandbox builds |
+| `CLAUDE_AI_SESSION_KEY`        | -             | Claude AI session key                      |
+| `CLAUDE_WEB_SESSION_KEY`       | -             | Claude web session key                     |
+| `CLAUDE_WEB_COOKIE`            | -             | Claude web cookie                          |
+| `OPENAI_API_KEY`               | -             | OpenAI API key (optional)                  |
+| `ANTHROPIC_API_KEY`            | -             | Anthropic API key (optional)               |
+| `ELEVENLABS_API_KEY`           | -             | ElevenLabs API key (optional)              |
 
-> Legacy `CLAWDBOT_*` Docker build args are still accepted in the Dockerfile to ease migration.
+> Legacy `CLAWDBOT_*` names are still accepted as fallbacks in Dockerfile build args, Compose variables, and Bake variables to ease migration.
 
 ### Volume Mounts
 
-| Container Path | Description |
-|----------------|-------------|
+| Container Path         | Description                     |
+| ---------------------- | ------------------------------- |
 | `/home/node/.openclaw` | OpenClaw configuration and data |
-| `/workspace` | Working directory for projects |
+| `/workspace`           | Working directory for projects  |
 
 ## Services
 
-| Service | Profile | Description |
-|---------|---------|-------------|
-| `openclaw-gateway` | (default) | Main gateway service |
-| `openclaw-cli` | `cli` | Interactive CLI |
+| Service            | Profile   | Description                   |
+| ------------------ | --------- | ----------------------------- |
+| `openclaw-gateway` | (default) | Main gateway service          |
+| `openclaw-cli`     | `cli`     | Interactive CLI               |
 | `openclaw-sandbox` | `sandbox` | Sandbox execution environment |
-| `openclaw-browser` | `browser` | Browser automation support |
+| `openclaw-browser` | `browser` | Browser automation support    |
 
 ## License
 
