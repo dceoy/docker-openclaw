@@ -1,16 +1,17 @@
-# docker-clawdbot
+# docker-openclaw
 
-Dockerfile for [Clawdbot](https://github.com/clawdbot/clawdbot)
+Dockerfile and Compose setup for [OpenClaw (formerly Clawdbot)](https://github.com/openclaw/openclaw).
 
 ## Features
 
 - Multi-stage Dockerfile with optimized builds
 - Multiple image variants:
-  - `clawdbot` - Standard image for running the gateway
-  - `clawdbot-sandbox` - Sandbox image with optional additional packages
-  - `clawdbot-browser` - Browser-enabled image with Chromium for automation
+  - `openclaw` - Standard image for running the gateway
+  - `openclaw-sandbox` - Sandbox image with optional additional packages
+  - `openclaw-browser` - Browser-enabled image with Chromium for automation
 - Docker Compose configuration with service profiles
 - Support for multiple platforms (linux/amd64, linux/arm64)
+- Optional backward-compatible Docker build args for legacy `CLAWDBOT_*` names
 
 ## Prerequisites
 
@@ -22,8 +23,8 @@ Dockerfile for [Clawdbot](https://github.com/clawdbot/clawdbot)
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/dceoy/docker-clawdbot.git
-   cd docker-clawdbot
+   git clone https://github.com/dceoy/docker-openclaw.git
+   cd docker-openclaw
    ```
 
 2. Copy the example environment file:
@@ -44,23 +45,21 @@ Dockerfile for [Clawdbot](https://github.com/clawdbot/clawdbot)
 4. Create necessary directories:
 
    ```bash
-   mkdir -p .clawdbot workspace
+   mkdir -p .openclaw workspace
    ```
 
 5. Start the gateway service:
 
    ```bash
-   docker compose up -d clawdbot-gateway
+   docker compose up -d openclaw-gateway
    ```
 
 ## Usage
 
 ### Running the Gateway
 
-Start the gateway service:
-
 ```bash
-docker compose up -d clawdbot-gateway
+docker compose up -d openclaw-gateway
 ```
 
 The gateway will be available at:
@@ -70,32 +69,26 @@ The gateway will be available at:
 
 ### Running the CLI
 
-Start an interactive CLI session:
-
 ```bash
-docker compose run --rm clawdbot-cli
+docker compose run --rm openclaw-cli
 ```
 
 Or use the onboarding wizard:
 
 ```bash
-docker compose run --rm clawdbot-cli clawdbot onboard
+docker compose run --rm openclaw-cli openclaw onboard
 ```
 
 ### Running with Browser Support
 
-For browser automation features:
-
 ```bash
-docker compose --profile browser up -d clawdbot-browser
+docker compose --profile browser up -d openclaw-browser
 ```
 
 ### Running the Sandbox
 
-For isolated sandbox execution:
-
 ```bash
-docker compose --profile sandbox up -d clawdbot-sandbox
+docker compose --profile sandbox up -d openclaw-sandbox
 ```
 
 ## Building Images
@@ -103,7 +96,7 @@ docker compose --profile sandbox up -d clawdbot-sandbox
 ### Build the standard image
 
 ```bash
-docker compose build clawdbot-gateway
+docker compose build openclaw-gateway
 ```
 
 ### Build with Docker Buildx Bake
@@ -123,7 +116,7 @@ docker buildx bake all
 Override versions with environment variables:
 
 ```bash
-CLAWDBOT_VERSION=1.0.0 CLAWDBOT_NODE_VERSION=22 docker buildx bake all
+OPENCLAW_VERSION=latest OPENCLAW_NODE_VERSION=22 docker buildx bake all
 ```
 
 ### Build all images
@@ -132,31 +125,20 @@ CLAWDBOT_VERSION=1.0.0 CLAWDBOT_NODE_VERSION=22 docker buildx bake all
 docker compose --profile cli --profile sandbox --profile browser build
 ```
 
-### Build with specific version
-
-```bash
-CLAWDBOT_VERSION=1.0.0 docker compose build clawdbot-gateway
-```
-
-### Build with additional packages (sandbox)
-
-```bash
-CLAWDBOT_DOCKER_APT_PACKAGES="python3 python3-pip" docker compose --profile sandbox build clawdbot-sandbox
-```
-
 ## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CLAWDBOT_VERSION` | `latest` | Clawdbot version to install |
-| `CLAWDBOT_NODE_VERSION` | `22` | Node.js version |
-| `CLAWDBOT_IMAGE` | `clawdbot` | Docker image name |
-| `CLAWDBOT_CONFIG_DIR` | `./.clawdbot` | Configuration directory |
-| `CLAWDBOT_WORKSPACE_DIR` | `./workspace` | Workspace directory |
-| `CLAWDBOT_GATEWAY_PORT` | `18789` | Gateway HTTP port |
-| `CLAWDBOT_GATEWAY_WS_PORT` | `18790` | Gateway WebSocket port |
+| `OPENCLAW_VERSION` | `latest` | OpenClaw version to install |
+| `OPENCLAW_NODE_VERSION` | `22` | Node.js version |
+| `OPENCLAW_IMAGE` | `openclaw` | Docker image name |
+| `OPENCLAW_CONFIG_DIR` | `./.openclaw` | Configuration directory |
+| `OPENCLAW_WORKSPACE_DIR` | `./workspace` | Workspace directory |
+| `OPENCLAW_GATEWAY_PORT` | `18789` | Gateway HTTP port |
+| `OPENCLAW_GATEWAY_WS_PORT` | `18790` | Gateway WebSocket port |
+| `OPENCLAW_DOCKER_APT_PACKAGES` | - | Additional apt packages for sandbox builds |
 | `CLAUDE_AI_SESSION_KEY` | - | Claude AI session key |
 | `CLAUDE_WEB_SESSION_KEY` | - | Claude web session key |
 | `CLAUDE_WEB_COOKIE` | - | Claude web cookie |
@@ -164,21 +146,23 @@ CLAWDBOT_DOCKER_APT_PACKAGES="python3 python3-pip" docker compose --profile sand
 | `ANTHROPIC_API_KEY` | - | Anthropic API key (optional) |
 | `ELEVENLABS_API_KEY` | - | ElevenLabs API key (optional) |
 
+> Legacy `CLAWDBOT_*` Docker build args are still accepted in the Dockerfile to ease migration.
+
 ### Volume Mounts
 
 | Container Path | Description |
 |----------------|-------------|
-| `/home/node/.clawdbot` | Clawdbot configuration and data |
+| `/home/node/.openclaw` | OpenClaw configuration and data |
 | `/workspace` | Working directory for projects |
 
 ## Services
 
 | Service | Profile | Description |
 |---------|---------|-------------|
-| `clawdbot-gateway` | (default) | Main gateway service |
-| `clawdbot-cli` | `cli` | Interactive CLI |
-| `clawdbot-sandbox` | `sandbox` | Sandbox execution environment |
-| `clawdbot-browser` | `browser` | Browser automation support |
+| `openclaw-gateway` | (default) | Main gateway service |
+| `openclaw-cli` | `cli` | Interactive CLI |
+| `openclaw-sandbox` | `sandbox` | Sandbox execution environment |
+| `openclaw-browser` | `browser` | Browser automation support |
 
 ## License
 
@@ -186,5 +170,5 @@ CLAWDBOT_DOCKER_APT_PACKAGES="python3 python3-pip" docker compose --profile sand
 
 ## References
 
-- [Clawdbot](https://github.com/clawdbot/clawdbot)
+- [OpenClaw](https://github.com/openclaw/openclaw)
 - [devcontainer-ai-coder](https://github.com/dceoy/devcontainer-ai-coder)
