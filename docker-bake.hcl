@@ -1,60 +1,60 @@
-variable "CLAWDBOT_VERSION" {
+variable "OPENCLAW_VERSION" {
   default = "latest"
 }
 
-variable "CLAWDBOT_NODE_VERSION" {
+variable "OPENCLAW_NODE_VERSION" {
   default = "22"
 }
 
-variable "CLAWDBOT_IMAGE" {
-  default = "clawdbot"
+variable "OPENCLAW_IMAGE" {
+  default = "openclaw"
 }
 
-variable "CLAWDBOT_DOCKER_APT_PACKAGES" {
+variable "OPENCLAW_DOCKER_APT_PACKAGES" {
   default = ""
 }
 
 group "default" {
-  targets = ["clawdbot"]
+  targets = ["openclaw"]
 }
 
 group "all" {
-  targets = ["clawdbot", "clawdbot-sandbox", "clawdbot-browser"]
+  targets = ["openclaw", "openclaw-sandbox", "openclaw-browser"]
 }
 
-target "clawdbot" {
+target "openclaw" {
   context = "."
   dockerfile = "Dockerfile"
-  target = "clawdbot"
+  target = "openclaw"
   platforms = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${CLAWDBOT_NODE_VERSION}"
-    CLAWDBOT_VERSION = "${CLAWDBOT_VERSION}"
+    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
+    OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
   }
-  tags = ["${CLAWDBOT_IMAGE}:${CLAWDBOT_VERSION}"]
+  tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}"]
 }
 
-target "clawdbot-sandbox" {
+target "openclaw-sandbox" {
   context = "."
   dockerfile = "Dockerfile"
-  target = "clawdbot-sandbox"
+  target = "openclaw-sandbox"
   platforms = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${CLAWDBOT_NODE_VERSION}"
-    CLAWDBOT_VERSION = "${CLAWDBOT_VERSION}"
-    CLAWDBOT_DOCKER_APT_PACKAGES = "${CLAWDBOT_DOCKER_APT_PACKAGES}"
+    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
+    OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
+    OPENCLAW_DOCKER_APT_PACKAGES = "${OPENCLAW_DOCKER_APT_PACKAGES}"
   }
-  tags = ["${CLAWDBOT_IMAGE}:${CLAWDBOT_VERSION}-sandbox"]
+  tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}-sandbox"]
 }
 
-target "clawdbot-browser" {
+target "openclaw-browser" {
   context = "."
   dockerfile = "Dockerfile"
-  target = "clawdbot-browser"
+  target = "openclaw-browser"
   platforms = ["linux/amd64", "linux/arm64"]
   args = {
-    NODE_VERSION = "${CLAWDBOT_NODE_VERSION}"
-    CLAWDBOT_VERSION = "${CLAWDBOT_VERSION}"
+    NODE_VERSION = "${OPENCLAW_NODE_VERSION}"
+    OPENCLAW_VERSION = "${OPENCLAW_VERSION}"
   }
-  tags = ["${CLAWDBOT_IMAGE}:${CLAWDBOT_VERSION}-browser"]
+  tags = ["${OPENCLAW_IMAGE}:${OPENCLAW_VERSION}-browser"]
 }
