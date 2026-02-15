@@ -77,14 +77,10 @@ RUN \
 FROM base AS openclaw
 
 ARG OPENCLAW_VERSION=latest
-ARG CLAWDBOT_VERSION
 
 RUN \
-    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
-    && npm cache clean --force \
-    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
-    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
+    && npm cache clean --force
 
 USER node
 WORKDIR /workspace
@@ -97,25 +93,19 @@ FROM base AS openclaw-sandbox
 
 ARG OPENCLAW_VERSION=latest
 ARG OPENCLAW_DOCKER_APT_PACKAGES=""
-ARG CLAWDBOT_VERSION
-ARG CLAWDBOT_DOCKER_APT_PACKAGES
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    export APT_PACKAGES="${OPENCLAW_DOCKER_APT_PACKAGES:-${CLAWDBOT_DOCKER_APT_PACKAGES:-}}" \
-    && if [ -n "${APT_PACKAGES}" ]; then \
+    if [ -n "${OPENCLAW_DOCKER_APT_PACKAGES}" ]; then \
         apt-get -y update \
         && apt-get -y install --no-install-recommends --no-install-suggests \
-            ${APT_PACKAGES}; \
+            ${OPENCLAW_DOCKER_APT_PACKAGES}; \
     fi
 
 RUN \
-    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
-    && npm cache clean --force \
-    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
-    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
+    && npm cache clean --force
 
 USER node
 WORKDIR /workspace
@@ -127,7 +117,6 @@ CMD ["openclaw", "gateway"]
 FROM base AS openclaw-browser
 
 ARG OPENCLAW_VERSION=latest
-ARG CLAWDBOT_VERSION
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -144,11 +133,8 @@ RUN \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    PKG_VERSION="${OPENCLAW_VERSION:-${CLAWDBOT_VERSION:-latest}}" \
-    && (npm install -g "openclaw@${PKG_VERSION}" || npm install -g "clawdbot@${PKG_VERSION}") \
-    && npm cache clean --force \
-    && if command -v openclaw >/dev/null 2>&1 && ! command -v clawdbot >/dev/null 2>&1; then ln -sf "$(command -v openclaw)" /usr/local/bin/clawdbot; fi \
-    && if command -v clawdbot >/dev/null 2>&1 && ! command -v openclaw >/dev/null 2>&1; then ln -sf "$(command -v clawdbot)" /usr/local/bin/openclaw; fi
+    npm install -g "openclaw@${OPENCLAW_VERSION}" \
+    && npm cache clean --force
 
 ENV CHROME_PATH=/usr/bin/chromium \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \

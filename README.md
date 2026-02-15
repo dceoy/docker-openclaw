@@ -11,7 +11,6 @@ Dockerfile and Compose setup for [OpenClaw (formerly Clawdbot)](https://github.c
   - `openclaw-browser` - Browser-enabled image with Chromium for automation
 - Docker Compose configuration with service profiles
 - Support for multiple platforms (linux/amd64, linux/arm64)
-- Optional backward-compatible Docker build args for legacy `CLAWDBOT_*` names
 
 ## Prerequisites
 
@@ -145,8 +144,6 @@ docker compose --profile cli --profile sandbox --profile browser build
 | `OPENAI_API_KEY`               | -             | OpenAI API key (optional)                  |
 | `ANTHROPIC_API_KEY`            | -             | Anthropic API key (optional)               |
 | `ELEVENLABS_API_KEY`           | -             | ElevenLabs API key (optional)              |
-
-> Legacy `CLAWDBOT_*` names are still accepted as fallbacks in Dockerfile build args, Compose variables, and Bake variables to ease migration.
 
 ### Volume Mounts
 
