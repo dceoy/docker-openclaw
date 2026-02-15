@@ -9,11 +9,6 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 ARG DEBIAN_FRONTEND=noninteractive
 ARG NODE_VERSION
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
-
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -63,7 +58,7 @@ RUN \
     apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends --no-install-suggests \
-        ca-certificates curl git jq procps tini \
+        ca-certificates curl gh git jq procps ripgrep tini \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -74,13 +69,16 @@ RUN \
     && chown -R node:node /home/node /workspace
 
 
-FROM base AS openclaw
+FROM base AS openclaw-runtime
 
 ARG OPENCLAW_VERSION=latest
 
 RUN \
     npm install -g "openclaw@${OPENCLAW_VERSION}" \
     && npm cache clean --force
+
+
+FROM openclaw-runtime AS openclaw
 
 USER node
 WORKDIR /workspace
@@ -89,9 +87,8 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["openclaw", "gateway"]
 
 
-FROM base AS openclaw-sandbox
+FROM openclaw-runtime AS openclaw-sandbox
 
-ARG OPENCLAW_VERSION=latest
 ARG OPENCLAW_DOCKER_APT_PACKAGES=""
 
 RUN \
@@ -100,12 +97,10 @@ RUN \
     if [ -n "${OPENCLAW_DOCKER_APT_PACKAGES}" ]; then \
         apt-get -y update \
         && apt-get -y install --no-install-recommends --no-install-suggests \
-            ${OPENCLAW_DOCKER_APT_PACKAGES}; \
+            ${OPENCLAW_DOCKER_APT_PACKAGES} \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*; \
     fi
-
-RUN \
-    npm install -g "openclaw@${OPENCLAW_VERSION}" \
-    && npm cache clean --force
 
 USER node
 WORKDIR /workspace
@@ -114,9 +109,7 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["openclaw", "gateway"]
 
 
-FROM base AS openclaw-browser
-
-ARG OPENCLAW_VERSION=latest
+FROM openclaw-runtime AS openclaw-browser
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -131,10 +124,6 @@ RUN \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-RUN \
-    npm install -g "openclaw@${OPENCLAW_VERSION}" \
-    && npm cache clean --force
 
 ENV CHROME_PATH=/usr/bin/chromium \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \

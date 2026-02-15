@@ -4,12 +4,13 @@ Dockerfile and Compose setup for [OpenClaw (formerly Clawdbot)](https://github.c
 
 ## Features
 
-- Multi-stage Dockerfile with optimized builds
+- Multi-stage Dockerfile refactored for shared layers and better build-cache reuse
 - Multiple image variants:
   - `openclaw` - Standard image for running the gateway
   - `openclaw-sandbox` - Sandbox image with optional additional packages
   - `openclaw-browser` - Browser-enabled image with Chromium for automation
 - Docker Compose configuration with service profiles
+- Developer utilities preinstalled in images (e.g., `gh`, `git`, `ripgrep`)
 - Support for multiple platforms (linux/amd64, linux/arm64)
 
 ## Prerequisites
