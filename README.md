@@ -1,14 +1,18 @@
 # docker-openclaw
 
-Docker wrapper files for running the published [`openclaw`](https://www.npmjs.com/package/openclaw)
-package in containers.
+Docker wrapper files for running the published
+[`openclaw`](https://www.npmjs.com/package/openclaw) package in containers.
 
-The root `Dockerfile` installs OpenClaw with `pnpm` during the image build, so
-it no longer depends on the vendored `./openclaw` source tree as Docker build
-context.
+The root `Dockerfile` now uses a cache-aware multi-stage build: one stage
+installs the published package with `pnpm`, and the final runtime stage copies
+only the installed runtime artifacts. Because the image doesn't copy repository
+content into the image, the Docker build context is intentionally reduced to the
+Dockerfile itself.
 
 ## Features
 
+- Multi-stage Docker build for a leaner runtime image
+- BuildKit cache mounts for `apt` and `pnpm` to speed rebuilds
 - `pnpm`-based installation of the published `openclaw` package
 - Root-context Docker builds that do not read from `./openclaw`
 - Shared image for `openclaw-gateway` and `openclaw-cli`
@@ -121,7 +125,7 @@ file is required.
 ### Build directly with `docker build`
 
 ```bash
-docker build -t openclaw:local .
+DOCKER_BUILDKIT=1 docker build -t openclaw:local .
 ```
 
 Example overrides:
@@ -131,6 +135,10 @@ OPENCLAW_VERSION=latest docker buildx bake
 OPENCLAW_NODE_VERSION=22 docker buildx bake
 OPENCLAW_INSTALL_BROWSER=1 docker buildx bake
 ```
+
+The Dockerfile relies on BuildKit cache mounts. `docker compose build` and
+`docker buildx bake` already use BuildKit; set `DOCKER_BUILDKIT=1` for plain
+`docker build` if your Docker installation doesn't enable it by default.
 
 ## Configuration
 
