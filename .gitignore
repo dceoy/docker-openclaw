@@ -139,5 +139,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # OpenClaw runtime data
+openclaw
 .openclaw
 workspace

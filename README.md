@@ -1,22 +1,24 @@
 # docker-openclaw
 
-Dockerfile and Compose setup for [OpenClaw (formerly Clawdbot)](https://github.com/openclaw/openclaw).
+Docker wrapper files for running the published [`openclaw`](https://www.npmjs.com/package/openclaw)
+package in containers.
+
+The root `Dockerfile` installs OpenClaw with `pnpm` during the image build, so
+it no longer depends on the vendored `./openclaw` source tree as Docker build
+context.
 
 ## Features
 
-- Multi-stage Dockerfile refactored for shared layers and better build-cache reuse
-- Multiple image variants:
-  - `openclaw` - Standard image for running the gateway
-  - `openclaw-sandbox` - Sandbox image with optional additional packages
-  - `openclaw-browser` - Browser-enabled image with Chromium for automation
-- Docker Compose configuration with service profiles
-- Developer utilities preinstalled in images (e.g., `gh`, `git`, `ripgrep`)
-- Support for multiple platforms (linux/amd64, linux/arm64)
+- `pnpm`-based installation of the published `openclaw` package
+- Root-context Docker builds that do not read from `./openclaw`
+- Shared image for `openclaw-gateway` and `openclaw-cli`
+- Optional browser and Docker CLI support via build args
+- Multi-platform `docker buildx bake` target
 
 ## Prerequisites
 
 - Docker Engine 20.10+
-- Docker Compose v2.0+
+- Docker Compose v2+
 
 ## Quick Start
 
@@ -33,140 +35,152 @@ Dockerfile and Compose setup for [OpenClaw (formerly Clawdbot)](https://github.c
    cp .env.example .env
    ```
 
-3. Edit `.env` and configure your credentials:
+3. Edit `.env` and set the values you need. In most cases you will want at least:
 
    ```bash
-   # Required for Claude integration
-   CLAUDE_AI_SESSION_KEY=your_session_key
-   CLAUDE_WEB_SESSION_KEY=your_web_session_key
-   CLAUDE_WEB_COOKIE=your_cookie
+   OPENCLAW_GATEWAY_TOKEN=change-me-to-a-long-random-token
+   ANTHROPIC_API_KEY=...
    ```
 
-4. Create necessary directories:
+4. Create the host directories used by bind mounts:
 
    ```bash
    mkdir -p .openclaw workspace
    ```
 
-5. Start the gateway service:
+5. Build and start the gateway:
 
    ```bash
-   docker compose up -d openclaw-gateway
+   docker compose up -d --build openclaw-gateway
+   ```
+
+6. Run onboarding or other CLI flows as needed:
+
+   ```bash
+   docker compose run --rm openclaw-cli onboard
    ```
 
 ## Usage
 
-### Running the Gateway
+### Run the gateway
 
 ```bash
 docker compose up -d openclaw-gateway
 ```
 
-The gateway will be available at:
+Default endpoints:
 
-- HTTP: `http://localhost:18789`
-- WebSocket: `ws://localhost:18790`
+- HTTP: `http://127.0.0.1:18789`
+- Bridge/WebSocket: `ws://127.0.0.1:18790`
 
-### Running the CLI
+The published bind mode is controlled by `OPENCLAW_GATEWAY_BIND` and should use
+OpenClaw bind values such as `lan` or `loopback`.
+
+### Run the CLI
 
 ```bash
 docker compose run --rm openclaw-cli
+docker compose run --rm openclaw-cli onboard
+docker compose run --rm openclaw-cli dashboard --no-open
+docker compose run -T --rm openclaw-cli devices list --json
 ```
 
-Or use the onboarding wizard:
+### Enable browser automation support
+
+Set `OPENCLAW_INSTALL_BROWSER=1` in `.env`, then rebuild:
 
 ```bash
-docker compose run --rm openclaw-cli openclaw onboard
+docker compose build
+docker compose up -d openclaw-gateway
 ```
 
-### Running with Browser Support
+### Enable Docker CLI support for sandboxing
 
-```bash
-docker compose --profile browser up -d openclaw-browser
-```
-
-### Running the Sandbox
-
-```bash
-docker compose --profile sandbox up -d openclaw-sandbox
-```
+Set `OPENCLAW_INSTALL_DOCKER_CLI=1` in `.env`, rebuild the image, and mount the
+host Docker socket into the container if you want Docker-backed agent sandboxing.
+The root Compose file does not mount the socket by default.
 
 ## Building Images
 
-### Build the standard image
+### Build with Docker Compose
 
 ```bash
-docker compose build openclaw-gateway
+docker compose build
 ```
 
 ### Build with Docker Buildx Bake
-
-Build the default gateway image:
 
 ```bash
 docker buildx bake
 ```
 
-Build all images (gateway, sandbox, browser):
+`docker buildx bake` now reads the build definition directly from `compose.yml`.
+The default bake target is `openclaw-gateway`, so no separate `docker-bake.hcl`
+file is required.
+
+### Build directly with `docker build`
 
 ```bash
-docker buildx bake all
+docker build -t openclaw:local .
 ```
 
-Override versions with environment variables:
+Example overrides:
 
 ```bash
-OPENCLAW_VERSION=latest OPENCLAW_NODE_VERSION=22 docker buildx bake all
-```
-
-### Build all images
-
-```bash
-docker compose --profile cli --profile sandbox --profile browser build
+OPENCLAW_VERSION=latest docker buildx bake
+OPENCLAW_NODE_VERSION=22 docker buildx bake
+OPENCLAW_INSTALL_BROWSER=1 docker buildx bake
 ```
 
 ## Configuration
 
-### Environment Variables
+### Core variables
 
-| Variable                       | Default       | Description                                |
-| ------------------------------ | ------------- | ------------------------------------------ |
-| `OPENCLAW_VERSION`             | `latest`      | OpenClaw version to install                |
-| `OPENCLAW_NODE_VERSION`        | `22`          | Node.js version                            |
-| `OPENCLAW_IMAGE`               | `openclaw`    | Docker image name                          |
-| `OPENCLAW_CONFIG_DIR`          | `./.openclaw` | Configuration directory                    |
-| `OPENCLAW_WORKSPACE_DIR`       | `./workspace` | Workspace directory                        |
-| `OPENCLAW_GATEWAY_PORT`        | `18789`       | Gateway HTTP port                          |
-| `OPENCLAW_GATEWAY_WS_PORT`     | `18790`       | Gateway WebSocket port                     |
-| `OPENCLAW_DOCKER_APT_PACKAGES` | -             | Additional apt packages for sandbox builds |
-| `CLAUDE_AI_SESSION_KEY`        | -             | Claude AI session key                      |
-| `CLAUDE_WEB_SESSION_KEY`       | -             | Claude web session key                     |
-| `CLAUDE_WEB_COOKIE`            | -             | Claude web cookie                          |
-| `OPENAI_API_KEY`               | -             | OpenAI API key (optional)                  |
-| `ANTHROPIC_API_KEY`            | -             | Anthropic API key (optional)               |
-| `ELEVENLABS_API_KEY`           | -             | ElevenLabs API key (optional)              |
+| Variable                             | Default          | Description                                            |
+| ------------------------------------ | ---------------- | ------------------------------------------------------ |
+| `OPENCLAW_IMAGE`                     | `openclaw:local` | Image name and tag used by Compose and Bake            |
+| `OPENCLAW_NODE_VERSION`              | `22`             | Node.js major version used for the base image          |
+| `OPENCLAW_VERSION`                   | `latest`         | Published OpenClaw package version installed by `pnpm` |
+| `OPENCLAW_DOCKER_APT_PACKAGES`       | -                | Extra apt packages added to the runtime image          |
+| `OPENCLAW_INSTALL_BROWSER`           | -                | Set to `1` to install Chromium + Xvfb                  |
+| `OPENCLAW_INSTALL_DOCKER_CLI`        | -                | Set to `1` to add Docker CLI support                   |
+| `OPENCLAW_CONFIG_DIR`                | `./.openclaw`    | Host path mounted to `/home/node/.openclaw`            |
+| `OPENCLAW_WORKSPACE_DIR`             | `./workspace`    | Host path mounted to `/home/node/.openclaw/workspace`  |
+| `OPENCLAW_GATEWAY_BIND`              | `lan`            | Gateway bind mode passed to OpenClaw                   |
+| `OPENCLAW_GATEWAY_PORT`              | `18789`          | Published HTTP port                                    |
+| `OPENCLAW_BRIDGE_PORT`               | `18790`          | Published bridge/WebSocket port                        |
+| `OPENCLAW_GATEWAY_TOKEN`             | -                | Gateway auth token                                     |
+| `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` | -                | Allow trusted private-network `ws://` targets          |
 
-### Volume Mounts
+### Provider passthrough
 
-| Container Path         | Description                     |
-| ---------------------- | ------------------------------- |
-| `/home/node/.openclaw` | OpenClaw configuration and data |
-| `/workspace`           | Working directory for projects  |
+The Compose file also passes these optional provider variables through to the
+containers when present in `.env`:
+
+- `CLAUDE_AI_SESSION_KEY`
+- `CLAUDE_WEB_SESSION_KEY`
+- `CLAUDE_WEB_COOKIE`
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `GEMINI_API_KEY`
+- `OPENROUTER_API_KEY`
+- `ELEVENLABS_API_KEY`
+
+### Volume mounts
+
+| Container path                   | Description                          |
+| -------------------------------- | ------------------------------------ |
+| `/home/node/.openclaw`           | OpenClaw state, config, and sessions |
+| `/home/node/.openclaw/workspace` | Workspace used by agents and tools   |
 
 ## Services
 
-| Service            | Profile   | Description                   |
-| ------------------ | --------- | ----------------------------- |
-| `openclaw-gateway` | (default) | Main gateway service          |
-| `openclaw-cli`     | `cli`     | Interactive CLI               |
-| `openclaw-sandbox` | `sandbox` | Sandbox execution environment |
-| `openclaw-browser` | `browser` | Browser automation support    |
-
-## License
-
-[MIT](LICENSE)
+| Service            | Description                                                         |
+| ------------------ | ------------------------------------------------------------------- |
+| `openclaw-gateway` | Main gateway container                                              |
+| `openclaw-cli`     | Interactive CLI container that shares the gateway network namespace |
 
 ## References
 
 - [OpenClaw](https://github.com/openclaw/openclaw)
-- [devcontainer-ai-coder](https://github.com/dceoy/devcontainer-ai-coder)
+- [OpenClaw package on npm](https://www.npmjs.com/package/openclaw)
