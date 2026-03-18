@@ -1,134 +1,88 @@
 ---
+x-openclaw-build: &openclaw-build
+  context: .
+  dockerfile: Dockerfile
+  platforms:
+    - linux/amd64
+    - linux/arm64
+  tags:
+    - ${OPENCLAW_IMAGE:-openclaw:local}
+  args:
+    OPENCLAW_NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
+    OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
+    OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-}
+    OPENCLAW_INSTALL_BROWSER: ${OPENCLAW_INSTALL_BROWSER:-}
+    OPENCLAW_INSTALL_DOCKER_CLI: ${OPENCLAW_INSTALL_DOCKER_CLI:-}
+
+x-openclaw-environment: &openclaw-environment
+  HOME: /home/node
+  TERM: xterm-256color
+  OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
+  OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: ${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
+  OPENCLAW_BROWSER_DISABLE_GRAPHICS_FLAGS: ${OPENCLAW_BROWSER_DISABLE_GRAPHICS_FLAGS:-}
+  OPENCLAW_BROWSER_DISABLE_EXTENSIONS: ${OPENCLAW_BROWSER_DISABLE_EXTENSIONS:-}
+  OPENCLAW_BROWSER_RENDERER_PROCESS_LIMIT: ${OPENCLAW_BROWSER_RENDERER_PROCESS_LIMIT:-}
+  CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
+  CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
+  CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+  ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+
+x-openclaw-volumes: &openclaw-volumes
+  - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
+  - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/node/.openclaw/workspace
+
 services:
   openclaw-gateway:
     container_name: openclaw-gateway
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: openclaw
-      args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-      platforms:
-        - linux/amd64
-        - linux/arm64
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}
     hostname: openclaw-gateway
-    environment:
-      HOME: /home/node
-      TERM: xterm-256color
-      NODE_ENV: production
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-    volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+    image: ${OPENCLAW_IMAGE:-openclaw:local}
+    build: *openclaw-build
+    environment: *openclaw-environment
+    volumes: *openclaw-volumes
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
-      - "${OPENCLAW_GATEWAY_WS_PORT:-18790}:18790"
+      - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     restart: unless-stopped
-    command: ["openclaw", "gateway", "--bind", "0.0.0.0"]
+    command:
+      [
+        "gateway",
+        "--allow-unconfigured",
+        "--bind",
+        "${OPENCLAW_GATEWAY_BIND:-lan}",
+        "--port",
+        "18789",
+      ]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   openclaw-cli:
     container_name: openclaw-cli
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: openclaw
-      args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}
-    hostname: openclaw-cli
+    image: ${OPENCLAW_IMAGE:-openclaw:local}
+    network_mode: "service:openclaw-gateway"
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
     environment:
-      HOME: /home/node
-      TERM: xterm-256color
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-    volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
+      <<: *openclaw-environment
+      BROWSER: echo
+    volumes: *openclaw-volumes
     stdin_open: true
     tty: true
-    profiles:
-      - cli
-    entrypoint: ["/usr/bin/tini", "--"]
-    command: ["openclaw"]
-
-  openclaw-sandbox:
-    container_name: openclaw-sandbox
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: openclaw-sandbox
-      args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-        OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}-sandbox
-    hostname: openclaw-sandbox
-    environment:
-      HOME: /home/node
-      TERM: xterm-256color
-      NODE_ENV: production
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-    volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
-    ports:
-      - "${OPENCLAW_SANDBOX_PORT:-18791}:18789"
-      - "${OPENCLAW_SANDBOX_WS_PORT:-18792}:18790"
-    restart: unless-stopped
-    profiles:
-      - sandbox
-    command: ["openclaw", "gateway", "--bind", "0.0.0.0"]
-
-  openclaw-browser:
-    container_name: openclaw-browser
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: openclaw-browser
-      args:
-        NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    image: ${OPENCLAW_IMAGE:-openclaw}:${OPENCLAW_VERSION:-latest}-browser
-    hostname: openclaw-browser
-    environment:
-      HOME: /home/node
-      TERM: xterm-256color
-      NODE_ENV: production
-      CHROME_PATH: /usr/bin/chromium
-      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
-      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-    volumes:
-      - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/workspace
-    ports:
-      - "${OPENCLAW_BROWSER_PORT:-18793}:18789"
-      - "${OPENCLAW_BROWSER_WS_PORT:-18794}:18790"
-    restart: unless-stopped
-    profiles:
-      - browser
-    security_opt:
-      - seccomp=unconfined
-    command: ["openclaw", "gateway", "--bind", "0.0.0.0"]
+    depends_on:
+      - openclaw-gateway
