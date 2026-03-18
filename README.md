@@ -14,6 +14,7 @@ Dockerfile itself.
 - Multi-stage Docker build for a leaner runtime image
 - BuildKit cache mounts for `apt` and `pnpm` to speed rebuilds
 - `pnpm`-based installation of the published `openclaw` package
+- Configurable runtime user name, UID, and GID
 - Root-context Docker builds that do not read from `./openclaw`
 - Shared image for `openclaw-gateway` and `openclaw-cli`
 - Optional browser and Docker CLI support via build args
@@ -133,12 +134,24 @@ Example overrides:
 ```bash
 OPENCLAW_VERSION=latest docker buildx bake
 OPENCLAW_NODE_VERSION=22 docker buildx bake
+OPENCLAW_USER_NAME=developer docker buildx bake
 OPENCLAW_INSTALL_BROWSER=1 docker buildx bake
 ```
 
 The Dockerfile relies on BuildKit cache mounts. `docker compose build` and
 `docker buildx bake` already use BuildKit; set `DOCKER_BUILDKIT=1` for plain
 `docker build` if your Docker installation doesn't enable it by default.
+
+For direct `docker build` usage, pass the runtime-user build args explicitly
+when needed:
+
+```bash
+DOCKER_BUILDKIT=1 docker build \
+  --build-arg USER_NAME=developer \
+  --build-arg USER_UID=1001 \
+  --build-arg USER_GID=1001 \
+  -t openclaw:local .
+```
 
 ## Configuration
 
@@ -149,11 +162,14 @@ The Dockerfile relies on BuildKit cache mounts. `docker compose build` and
 | `OPENCLAW_IMAGE`                     | `openclaw:local` | Image name and tag used by Compose and Bake            |
 | `OPENCLAW_NODE_VERSION`              | `22`             | Node.js major version used for the base image          |
 | `OPENCLAW_VERSION`                   | `latest`         | Published OpenClaw package version installed by `pnpm` |
+| `OPENCLAW_USER_NAME`                 | `claw`           | Runtime username passed to Docker build arg `USER_NAME` |
+| `OPENCLAW_USER_UID`                  | `1001`           | Runtime UID passed to Docker build arg `USER_UID`      |
+| `OPENCLAW_USER_GID`                  | `1001`           | Runtime GID passed to Docker build arg `USER_GID`      |
 | `OPENCLAW_DOCKER_APT_PACKAGES`       | -                | Extra apt packages added to the runtime image          |
 | `OPENCLAW_INSTALL_BROWSER`           | -                | Set to `1` to install Chromium + Xvfb                  |
 | `OPENCLAW_INSTALL_DOCKER_CLI`        | -                | Set to `1` to add Docker CLI support                   |
-| `OPENCLAW_CONFIG_DIR`                | `./.openclaw`    | Host path mounted to `/home/node/.openclaw`            |
-| `OPENCLAW_WORKSPACE_DIR`             | `./workspace`    | Host path mounted to `/home/node/.openclaw/workspace`  |
+| `OPENCLAW_CONFIG_DIR`                | `./.openclaw`    | Host path mounted to `/home/<user>/.openclaw`          |
+| `OPENCLAW_WORKSPACE_DIR`             | `./workspace`    | Host path mounted to `/home/<user>/.openclaw/workspace` |
 | `OPENCLAW_GATEWAY_BIND`              | `lan`            | Gateway bind mode passed to OpenClaw                   |
 | `OPENCLAW_GATEWAY_PORT`              | `18789`          | Published HTTP port                                    |
 | `OPENCLAW_BRIDGE_PORT`               | `18790`          | Published bridge/WebSocket port                        |
@@ -176,10 +192,12 @@ containers when present in `.env`:
 
 ### Volume mounts
 
+`<user>` resolves to `OPENCLAW_USER_NAME` and defaults to `claw`.
+
 | Container path                   | Description                          |
 | -------------------------------- | ------------------------------------ |
-| `/home/node/.openclaw`           | OpenClaw state, config, and sessions |
-| `/home/node/.openclaw/workspace` | Workspace used by agents and tools   |
+| `/home/<user>/.openclaw`           | OpenClaw state, config, and sessions |
+| `/home/<user>/.openclaw/workspace` | Workspace used by agents and tools   |
 
 ## Services
 
