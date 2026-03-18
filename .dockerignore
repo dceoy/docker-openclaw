@@ -1,8 +1,1 @@
-.git
-.env
-.env.*
-.openclaw
-workspace
-openclaw
-node_modules
-*.log
+.gitignore
