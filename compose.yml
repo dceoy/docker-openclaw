@@ -10,12 +10,15 @@ x-openclaw-build: &openclaw-build
   args:
     OPENCLAW_NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
     OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
+    USER_NAME: ${OPENCLAW_USER_NAME:-claw}
+    USER_UID: ${OPENCLAW_USER_UID:-1001}
+    USER_GID: ${OPENCLAW_USER_GID:-1001}
     OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-}
     OPENCLAW_INSTALL_BROWSER: ${OPENCLAW_INSTALL_BROWSER:-}
     OPENCLAW_INSTALL_DOCKER_CLI: ${OPENCLAW_INSTALL_DOCKER_CLI:-}
 
 x-openclaw-environment: &openclaw-environment
-  HOME: /home/node
+  HOME: /home/${OPENCLAW_USER_NAME:-claw}
   TERM: xterm-256color
   OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
   OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: ${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
@@ -32,8 +35,8 @@ x-openclaw-environment: &openclaw-environment
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
 
 x-openclaw-volumes: &openclaw-volumes
-  - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/node/.openclaw
-  - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/node/.openclaw/workspace
+  - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/${OPENCLAW_USER_NAME:-claw}/.openclaw
+  - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/${OPENCLAW_USER_NAME:-claw}/.openclaw/workspace
 
 services:
   openclaw-gateway:
