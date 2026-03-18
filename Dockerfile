@@ -23,6 +23,7 @@ RUN \
       && printf 'Binary::apt::APT::Keep-Downloaded-Packages "true";\n' \
         > /etc/apt/apt.conf.d/keep-cache
 
+# hadolint ignore=DL3008
 RUN \
       --mount=type=cache,id=openclaw-apt-cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,id=openclaw-apt-lib,target=/var/lib/apt,sharing=locked \
@@ -72,6 +73,7 @@ ENV \
   PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
+# hadolint ignore=DL3008
 RUN \
       --mount=type=cache,id=openclaw-apt-cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,id=openclaw-apt-lib,target=/var/lib/apt,sharing=locked \
@@ -80,6 +82,7 @@ RUN \
         && apt-get -yqq install --no-install-recommends --no-install-suggests ${OPENCLAW_DOCKER_APT_PACKAGES}; \
       fi
 
+# hadolint ignore=DL3008
 RUN \
       --mount=type=cache,id=openclaw-apt-cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,id=openclaw-apt-lib,target=/var/lib/apt,sharing=locked \
@@ -89,6 +92,7 @@ RUN \
           chromium chromium-sandbox fonts-liberation xvfb; \
       fi
 
+# hadolint ignore=DL3008
 RUN \
       --mount=type=cache,id=openclaw-apt-cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,id=openclaw-apt-lib,target=/var/lib/apt,sharing=locked \

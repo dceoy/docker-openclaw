@@ -157,24 +157,24 @@ DOCKER_BUILDKIT=1 docker build \
 
 ### Core variables
 
-| Variable                             | Default          | Description                                            |
-| ------------------------------------ | ---------------- | ------------------------------------------------------ |
-| `OPENCLAW_IMAGE`                     | `openclaw:local` | Image name and tag used by Compose and Bake            |
-| `OPENCLAW_NODE_VERSION`              | `22`             | Node.js major version used for the base image          |
-| `OPENCLAW_VERSION`                   | `latest`         | Published OpenClaw package version installed by `pnpm` |
+| Variable                             | Default          | Description                                             |
+| ------------------------------------ | ---------------- | ------------------------------------------------------- |
+| `OPENCLAW_IMAGE`                     | `openclaw:local` | Image name and tag used by Compose and Bake             |
+| `OPENCLAW_NODE_VERSION`              | `22`             | Node.js major version used for the base image           |
+| `OPENCLAW_VERSION`                   | `latest`         | Published OpenClaw package version installed by `pnpm`  |
 | `OPENCLAW_USER_NAME`                 | `claw`           | Runtime username passed to Docker build arg `USER_NAME` |
-| `OPENCLAW_USER_UID`                  | `1001`           | Runtime UID passed to Docker build arg `USER_UID`      |
-| `OPENCLAW_USER_GID`                  | `1001`           | Runtime GID passed to Docker build arg `USER_GID`      |
-| `OPENCLAW_DOCKER_APT_PACKAGES`       | -                | Extra apt packages added to the runtime image          |
-| `OPENCLAW_INSTALL_BROWSER`           | -                | Set to `1` to install Chromium + Xvfb                  |
-| `OPENCLAW_INSTALL_DOCKER_CLI`        | -                | Set to `1` to add Docker CLI support                   |
-| `OPENCLAW_CONFIG_DIR`                | `./.openclaw`    | Host path mounted to `/home/<user>/.openclaw`          |
+| `OPENCLAW_USER_UID`                  | `1001`           | Runtime UID passed to Docker build arg `USER_UID`       |
+| `OPENCLAW_USER_GID`                  | `1001`           | Runtime GID passed to Docker build arg `USER_GID`       |
+| `OPENCLAW_DOCKER_APT_PACKAGES`       | -                | Extra apt packages added to the runtime image           |
+| `OPENCLAW_INSTALL_BROWSER`           | -                | Set to `1` to install Chromium + Xvfb                   |
+| `OPENCLAW_INSTALL_DOCKER_CLI`        | -                | Set to `1` to add Docker CLI support                    |
+| `OPENCLAW_CONFIG_DIR`                | `./.openclaw`    | Host path mounted to `/home/<user>/.openclaw`           |
 | `OPENCLAW_WORKSPACE_DIR`             | `./workspace`    | Host path mounted to `/home/<user>/.openclaw/workspace` |
-| `OPENCLAW_GATEWAY_BIND`              | `lan`            | Gateway bind mode passed to OpenClaw                   |
-| `OPENCLAW_GATEWAY_PORT`              | `18789`          | Published HTTP port                                    |
-| `OPENCLAW_BRIDGE_PORT`               | `18790`          | Published bridge/WebSocket port                        |
-| `OPENCLAW_GATEWAY_TOKEN`             | -                | Gateway auth token                                     |
-| `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` | -                | Allow trusted private-network `ws://` targets          |
+| `OPENCLAW_GATEWAY_BIND`              | `lan`            | Gateway bind mode passed to OpenClaw                    |
+| `OPENCLAW_GATEWAY_PORT`              | `18789`          | Published HTTP port                                     |
+| `OPENCLAW_BRIDGE_PORT`               | `18790`          | Published bridge/WebSocket port                         |
+| `OPENCLAW_GATEWAY_TOKEN`             | -                | Gateway auth token                                      |
+| `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` | -                | Allow trusted private-network `ws://` targets           |
 
 ### Provider passthrough
 
@@ -194,8 +194,8 @@ containers when present in `.env`:
 
 `<user>` resolves to `OPENCLAW_USER_NAME` and defaults to `claw`.
 
-| Container path                   | Description                          |
-| -------------------------------- | ------------------------------------ |
+| Container path                     | Description                          |
+| ---------------------------------- | ------------------------------------ |
 | `/home/<user>/.openclaw`           | OpenClaw state, config, and sessions |
 | `/home/<user>/.openclaw/workspace` | Workspace used by agents and tools   |
 
