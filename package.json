@@ -1,0 +1,10 @@
+{
+  "name": "docker-openclaw",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Docker wrapper for the published OpenClaw package",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "openclaw": "2026.4.25"
+  }
+}

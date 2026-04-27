@@ -1,24 +1,6 @@
 ---
-x-openclaw-build: &openclaw-build
-  context: .
-  dockerfile: Dockerfile
-  platforms:
-    - linux/amd64
-    - linux/arm64
-  tags:
-    - ${OPENCLAW_IMAGE:-openclaw:local}
-  args:
-    OPENCLAW_NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-    OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    USER_NAME: ${OPENCLAW_USER_NAME:-claw}
-    USER_UID: ${OPENCLAW_USER_UID:-1001}
-    USER_GID: ${OPENCLAW_USER_GID:-1001}
-    OPENCLAW_DOCKER_APT_PACKAGES: ${OPENCLAW_DOCKER_APT_PACKAGES:-}
-    OPENCLAW_INSTALL_BROWSER: ${OPENCLAW_INSTALL_BROWSER:-}
-    OPENCLAW_INSTALL_DOCKER_CLI: ${OPENCLAW_INSTALL_DOCKER_CLI:-}
-
 x-openclaw-environment: &openclaw-environment
-  HOME: /home/${OPENCLAW_USER_NAME:-claw}
+  HOME: /home/${OPENCLAW_USER_NAME:-agent}
   TERM: xterm-256color
   OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
   OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: ${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
@@ -35,46 +17,54 @@ x-openclaw-environment: &openclaw-environment
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
 
 x-openclaw-volumes: &openclaw-volumes
-  - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/${OPENCLAW_USER_NAME:-claw}/.openclaw
-  - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/${OPENCLAW_USER_NAME:-claw}/.openclaw/workspace
+  - ${OPENCLAW_CONFIG_DIR:-./.openclaw}:/home/${OPENCLAW_USER_NAME:-agent}/.openclaw
+  - ${OPENCLAW_WORKSPACE_DIR:-./workspace}:/home/${OPENCLAW_USER_NAME:-agent}/.openclaw/workspace
 
 services:
   openclaw-gateway:
     container_name: openclaw-gateway
     hostname: openclaw-gateway
-    image: ${OPENCLAW_IMAGE:-openclaw:local}
-    build: *openclaw-build
+    image: ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      tags:
+        - ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
+      args:
+        OPENCLAW_NODE_VERSION: ${OPENCLAW_NODE_VERSION:-24}
+        USER_NAME: ${OPENCLAW_USER_NAME:-agent}
+        USER_UID: ${OPENCLAW_USER_UID:-1001}
+        USER_GID: ${OPENCLAW_USER_GID:-1001}
     environment: *openclaw-environment
     volumes: *openclaw-volumes
     ports:
-      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
-      - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+      - ${OPENCLAW_GATEWAY_PORT:-18789}:18789
+      - ${OPENCLAW_BRIDGE_PORT:-18790}:18790
     restart: unless-stopped
     command:
-      [
-        "gateway",
-        "--allow-unconfigured",
-        "--bind",
-        "${OPENCLAW_GATEWAY_BIND:-lan}",
-        "--port",
-        "18789",
-      ]
+      - gateway
+      - --allow-unconfigured
+      - --bind
+      - ${OPENCLAW_GATEWAY_BIND:-lan}
+      - --port
+      - '18789'
     healthcheck:
       test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
-        ]
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 20s
   openclaw-cli:
     container_name: openclaw-cli
-    image: ${OPENCLAW_IMAGE:-openclaw:local}
-    network_mode: "service:openclaw-gateway"
+    image: ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
+    network_mode: service:openclaw-gateway
     cap_drop:
       - NET_RAW
       - NET_ADMIN
