@@ -32,11 +32,11 @@
 
 - Docker Compose drives the local runtime workflow, and `docker buildx bake` is the supported multi-platform build entry point.
 - The published `openclaw` package is installed during image build with `pnpm`; this repository does not vendor the application source tree.
-- Optional browser automation and Docker-backed sandbox tooling are enabled with build args rather than separate images.
+- Chromium/Xvfb is included in the runtime image for browser automation.
 
 ### Repository Layout
 
-- `Dockerfile`: Builds the runtime image on `node:<ver>-bookworm-slim`, installs the published package with `pnpm`, and optionally adds Chromium/Xvfb or Docker CLI tooling through `OPENCLAW_...` build args.
+- `Dockerfile`: Builds the runtime image on `node:<ver>-bookworm-slim`, installs the published package with `pnpm`, and includes Chromium/Xvfb for browser automation.
 - `compose.yml`: Source of truth for local defaults and `docker buildx bake`; defines shared anchors plus `openclaw-gateway` and `openclaw-cli`.
 - `.env.example`: Template for build args, ports, bind mounts, gateway auth, browser tuning, and provider credentials.
 
@@ -44,7 +44,7 @@
 
 - Dockerfile instructions stay uppercase and should be grouped into explicit multi-line `RUN` blocks.
 - Optimize cache usage with `--mount=type=cache` for package manager caches and build dependencies in Dockerfile.
-- Use multi-stage builds to keep the final image minimal and focused on runtime dependencies in Dockerfile.
+- Keep the Dockerfile image minimal and focused on runtime dependencies.
 - Keep repository-specific build args and environment variables prefixed with `OPENCLAW_`.
 
 ## Security & Configuration Tips
@@ -52,7 +52,6 @@
 - Never commit API keys, tokens, `.env`, `.openclaw/`, or `workspace/` contents.
 - Provide secrets through environment variables at runtime instead of baking them into image layers.
 - Keep `OPENCLAW_GATEWAY_TOKEN`, `CLAUDE_*` session credentials, and provider API keys such as `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, and `ELEVENLABS_API_KEY` local-only.
-- Do not enable Docker socket access unless you explicitly need Docker-backed sandboxing.
 
 ## Commit & Pull Request Guidelines
 
