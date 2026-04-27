@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.10
-ARG OPENCLAW_NODE_VERSION=22
+ARG OPENCLAW_NODE_VERSION=24
 FROM node:${OPENCLAW_NODE_VERSION}-bookworm-slim AS base
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -34,28 +34,23 @@ RUN \
 FROM base AS openclaw-installer
 
 ENV \
-  OPENCLAW_APP_DIR=/opt/openclaw \
-  PNPM_HOME=/opt/pnpm \
-  PNPM_STORE_DIR=/opt/pnpm/store \
-  PATH=/opt/pnpm:${PATH}
+  OPENCLAW_APP_DIR=/opt/openclaw
 
 WORKDIR ${OPENCLAW_APP_DIR}
 
-COPY package.json pnpm-lock.yaml ./
+RUN \
+      --mount=type=bind,source=.,target=/mnt/host \
+      cp -a /mnt/host/package.json /mnt/host/pnpm-lock.yaml .
 
 RUN \
-      install -d -m 0755 "${OPENCLAW_APP_DIR}" "${PNPM_HOME}" "${PNPM_STORE_DIR}" \
-      && corepack enable
-
-RUN \
-      --mount=type=cache,id=openclaw-pnpm-store,target=/opt/pnpm/store \
-      pnpm install --prod --frozen-lockfile --package-import-method=copy \
-        --store-dir "${PNPM_STORE_DIR}" \
+      --mount=type=cache,id=openclaw-pnpm-store,target=/pnpm/store \
+      corepack pnpm install --prod --frozen-lockfile --package-import-method=copy \
+        --store-dir /pnpm/store \
       && chmod -R a+rX "${OPENCLAW_APP_DIR}"
 
 FROM base AS runtime
 
-ARG USER_NAME='claw'
+ARG USER_NAME='agent'
 ARG USER_UID=1001
 ARG USER_GID=1001
 ARG OPENCLAW_DOCKER_APT_PACKAGES=''
