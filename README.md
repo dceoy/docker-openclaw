@@ -4,16 +4,15 @@ Docker wrapper files for running the published
 [`openclaw`](https://www.npmjs.com/package/openclaw) package in containers.
 
 The root `Dockerfile` now uses a cache-aware multi-stage build: one stage
-installs the published package with `pnpm`, and the final runtime stage copies
-only the installed runtime artifacts. Because the image doesn't copy repository
-content into the image, the Docker build context is intentionally reduced to the
-Dockerfile itself.
+installs the published package from the committed `package.json` and
+`pnpm-lock.yaml`, and the final runtime stage copies only the installed runtime
+artifacts into the image.
 
 ## Features
 
 - Multi-stage Docker build for a leaner runtime image
 - BuildKit cache mounts for `apt` and `pnpm` to speed rebuilds
-- `pnpm`-based installation of the published `openclaw` package
+- `pnpm`-based installation of the published `openclaw` package pinned in `package.json`
 - Configurable runtime user name, UID, and GID
 - Root-context Docker builds that do not read from `./openclaw`
 - Shared image for `openclaw-gateway` and `openclaw-cli`
@@ -129,10 +128,18 @@ file is required.
 DOCKER_BUILDKIT=1 docker build -t openclaw:local .
 ```
 
+### Update the OpenClaw version
+
+Use `pnpm` to update the pinned dependency, then rebuild the image:
+
+```bash
+corepack pnpm add --save-exact openclaw@<version>
+docker compose build
+```
+
 Example overrides:
 
 ```bash
-OPENCLAW_VERSION=latest docker buildx bake
 OPENCLAW_NODE_VERSION=22 docker buildx bake
 OPENCLAW_USER_NAME=developer docker buildx bake
 OPENCLAW_INSTALL_BROWSER=1 docker buildx bake
@@ -161,7 +168,6 @@ DOCKER_BUILDKIT=1 docker build \
 | ------------------------------------ | ---------------- | ------------------------------------------------------- |
 | `OPENCLAW_IMAGE`                     | `openclaw:local` | Image name and tag used by Compose and Bake             |
 | `OPENCLAW_NODE_VERSION`              | `22`             | Node.js major version used for the base image           |
-| `OPENCLAW_VERSION`                   | `latest`         | Published OpenClaw package version installed by `pnpm`  |
 | `OPENCLAW_USER_NAME`                 | `claw`           | Runtime username passed to Docker build arg `USER_NAME` |
 | `OPENCLAW_USER_UID`                  | `1001`           | Runtime UID passed to Docker build arg `USER_UID`       |
 | `OPENCLAW_USER_GID`                  | `1001`           | Runtime GID passed to Docker build arg `USER_GID`       |
@@ -175,6 +181,9 @@ DOCKER_BUILDKIT=1 docker build \
 | `OPENCLAW_BRIDGE_PORT`               | `18790`          | Published bridge/WebSocket port                         |
 | `OPENCLAW_GATEWAY_TOKEN`             | -                | Gateway auth token                                      |
 | `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` | -                | Allow trusted private-network `ws://` targets           |
+
+The OpenClaw package version is pinned in `package.json` and resolved in
+`pnpm-lock.yaml`.
 
 ### Provider passthrough
 

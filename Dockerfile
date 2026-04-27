@@ -33,23 +33,25 @@ RUN \
 
 FROM base AS openclaw-installer
 
-ARG OPENCLAW_VERSION=latest
-
 ENV \
+  OPENCLAW_APP_DIR=/opt/openclaw \
   PNPM_HOME=/opt/pnpm \
   PNPM_STORE_DIR=/opt/pnpm/store \
   PATH=/opt/pnpm:${PATH}
 
+WORKDIR ${OPENCLAW_APP_DIR}
+
+COPY package.json pnpm-lock.yaml ./
+
 RUN \
-      install -d -m 0755 "${PNPM_HOME}" "${PNPM_STORE_DIR}" \
-      && corepack enable \
-      && corepack prepare pnpm@latest --activate
+      install -d -m 0755 "${OPENCLAW_APP_DIR}" "${PNPM_HOME}" "${PNPM_STORE_DIR}" \
+      && corepack enable
 
 RUN \
       --mount=type=cache,id=openclaw-pnpm-store,target=/opt/pnpm/store \
-      pnpm add -g --store-dir "${PNPM_STORE_DIR}" --package-import-method=copy \
-      "openclaw@${OPENCLAW_VERSION}" \
-      && chmod -R a+rX "${PNPM_HOME}"
+      pnpm install --prod --frozen-lockfile --package-import-method=copy \
+        --store-dir "${PNPM_STORE_DIR}" \
+      && chmod -R a+rX "${OPENCLAW_APP_DIR}"
 
 FROM base AS runtime
 
@@ -65,9 +67,8 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 ENV \
   DEBIAN_FRONTEND=noninteractive \
-  PNPM_HOME=/opt/pnpm \
-  PNPM_STORE_DIR=/opt/pnpm/store \
-  PATH=/opt/pnpm:${PATH} \
+  OPENCLAW_APP_DIR=/opt/openclaw \
+  PATH=/opt/openclaw/node_modules/.bin:${PATH} \
   HOME=/home/${USER_NAME} \
   CHROME_PATH=/usr/bin/chromium \
   PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
@@ -117,7 +118,7 @@ RUN \
         && apt-get -yqq install --no-install-recommends --no-install-suggests docker-ce-cli docker-compose-plugin; \
       fi
 
-COPY --from=openclaw-installer /opt/pnpm /opt/pnpm
+COPY --from=openclaw-installer /opt/openclaw /opt/openclaw
 
 RUN \
       if [[ "${USER_NAME}" == 'node' ]]; then \
@@ -129,7 +130,7 @@ RUN \
       fi \
       && install -d -m 0755 -o "${USER_UID}" -g "${USER_GID}" "${HOME}/.openclaw/workspace" \
       && chown -R "${USER_UID}:${USER_GID}" "${HOME}" \
-      && ln -sf "${PNPM_HOME}/openclaw" /usr/local/bin/openclaw
+      && ln -sf "${OPENCLAW_APP_DIR}/node_modules/.bin/openclaw" /usr/local/bin/openclaw
 
 USER ${USER_NAME}
 WORKDIR ${HOME}/.openclaw/workspace

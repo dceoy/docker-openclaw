@@ -6,10 +6,9 @@ x-openclaw-build: &openclaw-build
     - linux/amd64
     - linux/arm64
   tags:
-    - ${OPENCLAW_IMAGE:-openclaw:local}
+    - ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
   args:
     OPENCLAW_NODE_VERSION: ${OPENCLAW_NODE_VERSION:-22}
-    OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
     USER_NAME: ${OPENCLAW_USER_NAME:-claw}
     USER_UID: ${OPENCLAW_USER_UID:-1001}
     USER_GID: ${OPENCLAW_USER_GID:-1001}
@@ -42,7 +41,7 @@ services:
   openclaw-gateway:
     container_name: openclaw-gateway
     hostname: openclaw-gateway
-    image: ${OPENCLAW_IMAGE:-openclaw:local}
+    image: ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
     build: *openclaw-build
     environment: *openclaw-environment
     volumes: *openclaw-volumes
@@ -73,7 +72,7 @@ services:
       start_period: 20s
   openclaw-cli:
     container_name: openclaw-cli
-    image: ${OPENCLAW_IMAGE:-openclaw:local}
+    image: ${OPENCLAW_IMAGE:-dceoy/openclaw:local}
     network_mode: "service:openclaw-gateway"
     cap_drop:
       - NET_RAW
