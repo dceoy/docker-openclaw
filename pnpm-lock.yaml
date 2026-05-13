@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       openclaw:
-        specifier: 2026.5.3
-        version: 2026.5.3(@types/express@5.0.6)
+        specifier: 2026.5.4
+        version: 2026.5.4(@types/express@5.0.6)
 
 packages:
 
@@ -28,8 +28,8 @@ packages:
       zod:
         optional: true
 
-  '@anthropic-ai/sdk@0.92.0':
-    resolution: {integrity: sha512-l653JFC83wCglH8H83t1xpgDurCyPyslYW1maPRdCsfuNuGbLvQjQ81sWd3Go3LWRm0jNspzAhuqAYV8r9joSw==}
+  '@anthropic-ai/sdk@0.93.0':
+    resolution: {integrity: sha512-q9vaSZQVFx6B/gPxetGYfLXSJD5v0sOmh0OpZDq7yCrTSA+Rscvrtyol7JJTW40wEpQB4U1B4JXzxQitbQ3CAA==}
     hasBin: true
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
@@ -57,12 +57,12 @@ packages:
   '@aws-crypto/util@5.2.0':
     resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}
 
-  '@aws-sdk/client-bedrock-runtime@3.1041.0':
-    resolution: {integrity: sha512-1QehYO3jhdvNQ5mOKtwIiNV04y4aywaNZw9HzCp7SSYCX4yy+AGXc2hhYjCiMDUvQPIELuvbR8MXw81NGAj8ZQ==}
+  '@aws-sdk/client-bedrock-runtime@3.1042.0':
+    resolution: {integrity: sha512-uYJ/HDSQvorlgYqZSwRFGolEx5wygqyuBRfemXJ3Bla2yiRj9maSVOvWP88i/hDC2BKoH6NQw8GPB9Z4RYAnwQ==}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/client-bedrock@3.1041.0':
-    resolution: {integrity: sha512-xUpJ9iRgpj89d9QzjqYUlCnHYNQ/mblICGWhLdpZwvJpege4c36/W40fiYsvs3c3ql58JHQAnGdbNU6cNV1zew==}
+  '@aws-sdk/client-bedrock@3.1042.0':
+    resolution: {integrity: sha512-oEVjGU8wgW+eTF7ApdRU4jTs/iMVl4OdfpLmiNLuB082UVxxN/fQ5GIX2Ktbyt+x0mPlI3fug36XnOyf7oCo+Q==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/client-cognito-identity@3.1045.0':
@@ -161,6 +161,10 @@ packages:
     resolution: {integrity: sha512-Th7kPI6YPtvJUcdznooXJMy+9rQWjmEF81LxaJssngBzuysK4a/x+l8kjm1zb7nYsUPbndnBdUnwng/3PLvtGw==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/token-providers@3.1042.0':
+    resolution: {integrity: sha512-rOEGTVOrceb/1CfIWK0zl1v2WS70f/i5bDirLl5xdFAbVQ5znub6Ezf2ugmJEg+rionO0IkwbKX3Dh3T/oZjbA==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/types@3.973.8':
     resolution: {integrity: sha512-gjlAdtHMbtR9X5iIhVUvbVcy55KnznpC6bkDUWW9z915bi0ckdUr5cjf16Kp6xq0bP5HBD2xzgbL9F9Quv5vUw==}
     engines: {node: '>=20.0.0'}
@@ -212,12 +216,12 @@ packages:
   '@borewit/text-codec@0.2.2':
     resolution: {integrity: sha512-DDaRehssg1aNrH4+2hnj1B7vnUGEjU6OIlyRdkMd0aUdIUvKXrJfXsy8LVtXAy7DRvYVluWbMspsRhz2lcW0mQ==}
 
-  '@clack/core@1.3.0':
-    resolution: {integrity: sha512-xJPHpAmEQUBrXSLx0gF+q5K/IyihXpsHZcha+jB+tyahsKRK3Dxo4D0coZDewHo12NhiuzC3dTtMPbm53GEAAA==}
+  '@clack/core@1.3.1':
+    resolution: {integrity: sha512-fT1qHVGAag4IEkrupZ6lRRbNCs1vS9P01KB/sG8zKgvUztbYtFBtQpjSITNwooDZ83tpsPzP0mRNs1/KVszCRA==}
     engines: {node: '>= 20.12.0'}
 
-  '@clack/prompts@1.3.0':
-    resolution: {integrity: sha512-GgcWwRCs/xPtaqlMy8qRhPnZf9vlWcWZNHAitnVQ3yk7JmSralSiq5q07yaffYE8SogtDm7zFeKccx1QNVARpw==}
+  '@clack/prompts@1.4.0':
+    resolution: {integrity: sha512-S0My7XPGIgpRWMDG8uRqalbgT+a6FmCUdOW+HaIOVVpUPHOb7RrpvjTjiODadKp06fsrVDJZlIzc6yCTp4AnxA==}
     engines: {node: '>= 20.12.0'}
 
   '@google/genai@1.52.0':
@@ -363,25 +367,25 @@ packages:
     resolution: {integrity: sha512-faGUlTcXka5l7rv0lP3K3vGW/ejRuOS24RR2aSFWREUQqzjgdsuWNo/IiPqL3kWRGt6Ahl2+qcDAwtdeWeuGUw==}
     hasBin: true
 
-  '@mariozechner/pi-agent-core@0.71.1':
-    resolution: {integrity: sha512-LMXcKoPmjD06EHwnl7IGMkJs/l3Qdl9z1xKsQGqqyd60ZgdxaATtR40Yyzcku1ogu16NhCHrUg6PJ9XeRcT+qQ==}
+  '@mariozechner/pi-agent-core@0.73.0':
+    resolution: {integrity: sha512-ugcpvq0X9fr9fTSK29/3S4+KU/eeVMrBb7ZU3HqiF3xD7I1GlgumLj4FYmDrYSEA6+rzgNWlJUKwjKh9o0Z6AA==}
     engines: {node: '>=20.0.0'}
     deprecated: please use @earendil-works/pi-agent-core instead going forward
 
-  '@mariozechner/pi-ai@0.71.1':
-    resolution: {integrity: sha512-xksl4Y20qnjGbF3/eo0rX+TXEiZkkgRCEO8n/q7tMeVKhQ41migVG+msF+xTJoC3HkrTWfak3Y2Z6UjTUbjeTg==}
+  '@mariozechner/pi-ai@0.73.0':
+    resolution: {integrity: sha512-phKOpcde/ssz6UYszkmaGJ9LF9mgt/AP8LrtSwsfap+kMSeFfSQ2/mCSBT1mLJ2BqVuff9uXs1/+op1aQeaafQ==}
     engines: {node: '>=20.0.0'}
     deprecated: please use @earendil-works/pi-ai instead going forward
     hasBin: true
 
-  '@mariozechner/pi-coding-agent@0.71.1':
-    resolution: {integrity: sha512-pP7ymz+MmZrcN5aUldm1q1cVbG3u04yZR/XsHEfidku5W3PP1uxsA0A4g4NOhXnkK5EZ+Qg6H12BAbVvl7Qq2Q==}
+  '@mariozechner/pi-coding-agent@0.73.0':
+    resolution: {integrity: sha512-Fs2dRIgtjDT8X5VDGNGzxj251B0FvkRsgX03YJv1FK4wg5Maj+jkf8/5A6tbPnPcXsCgs41xxJRf3tF5vJRccA==}
     engines: {node: '>=20.6.0'}
     deprecated: please use @earendil-works/pi-coding-agent instead going forward
     hasBin: true
 
-  '@mariozechner/pi-tui@0.71.1':
-    resolution: {integrity: sha512-jNMN9EmGiH8EIKG62fceOTonoJ9k0cohTdjQCDrOk77vnxPVK+3be/+S1xk4hxviltwxlRH0d7mGQXs+CuEL8g==}
+  '@mariozechner/pi-tui@0.73.0':
+    resolution: {integrity: sha512-St1W+tMPKHatfK+lblsKfL+SsFyFVMK2tW6xHpBfCiMuevbOCRo/CMatso7mu1642UO04ncmfCrrpUK5L9aoog==}
     engines: {node: '>=20.0.0'}
     deprecated: please use @earendil-works/pi-tui instead going forward
 
@@ -1682,8 +1686,8 @@ packages:
       zod:
         optional: true
 
-  openclaw@2026.5.3:
-    resolution: {integrity: sha512-DMhhMDREWd/KM0RjrQT2aAv/xrf/zGiRzuDf91osADv84r84G9ZQROHalFwJIxzkw2dLg+StAUz0fkQKFPKQPQ==}
+  openclaw@2026.5.4:
+    resolution: {integrity: sha512-nbLukSwhBr/wqFLKwLKMDCXJ0lIQYpKKJ4Zzp6ZoN6erLjRUkU5MyU5wbY5oChl6yM7TinBYZ3lRw9V6K07DSQ==}
     engines: {node: '>=22.14.0'}
     hasBin: true
 
@@ -1806,8 +1810,8 @@ packages:
   proper-lockfile@4.1.2:
     resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
 
-  protobufjs@7.5.7:
-    resolution: {integrity: sha512-NGnrxS/nLKUo5nkbVQxlC71sB4hdfImdYIbFeSCidxtwATx0AHRPcANSLd0q5Bb2BkoSWo2iisQhGg5/r+ihbA==}
+  protobufjs@7.5.8:
+    resolution: {integrity: sha512-dvpCIeLPbXZS/Ete7yLaO7RenOdken2NHKykBXbsaGxZT0UTltcarBciw+A78SRQs9iMAAVpsYA+l8b1hTePIA==}
     engines: {node: '>=12.0.0'}
 
   proxy-addr@2.0.7:
@@ -2124,8 +2128,8 @@ packages:
     resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
     engines: {node: '>=20.18.1'}
 
-  undici@8.1.0:
-    resolution: {integrity: sha512-E9MkTS4xXLnRPYqxH2e6Hr2/49e7WFDKczKcCaFH4VaZs2iNvHMqeIkyUAD9vM8kujy9TjVrRlQ5KkdEJxB2pw==}
+  undici@8.2.0:
+    resolution: {integrity: sha512-Z+4Hx9GE26Lh9Upwfnc8C7SsrpBPGaM/Gm6kMFtiG7c+5IvQKlXi/t+9x9DrrCh29cww5TSP9YdVaBcnLDs5fQ==}
     engines: {node: '>=22.19.0'}
 
   unpipe@1.0.0:
@@ -2185,8 +2189,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.20.0:
-    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
+  ws@8.20.1:
+    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -2268,7 +2272,7 @@ snapshots:
     optionalDependencies:
       zod: 4.4.3
 
-  '@anthropic-ai/sdk@0.92.0(zod@4.4.3)':
+  '@anthropic-ai/sdk@0.93.0(zod@4.4.3)':
     dependencies:
       json-schema-to-ts: 3.1.1
     optionalDependencies:
@@ -2276,7 +2280,7 @@ snapshots:
 
   '@anthropic-ai/vertex-sdk@0.16.0(zod@4.4.3)':
     dependencies:
-      '@anthropic-ai/sdk': 0.92.0(zod@4.4.3)
+      '@anthropic-ai/sdk': 0.93.0(zod@4.4.3)
       google-auth-library: 9.15.1
     transitivePeerDependencies:
       - encoding
@@ -2315,7 +2319,7 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-bedrock-runtime@3.1041.0':
+  '@aws-sdk/client-bedrock-runtime@3.1042.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -2329,7 +2333,7 @@ snapshots:
       '@aws-sdk/middleware-user-agent': 3.972.38
       '@aws-sdk/middleware-websocket': 3.972.16
       '@aws-sdk/region-config-resolver': 3.972.13
-      '@aws-sdk/token-providers': 3.1041.0
+      '@aws-sdk/token-providers': 3.1042.0
       '@aws-sdk/types': 3.973.8
       '@aws-sdk/util-endpoints': 3.996.8
       '@aws-sdk/util-user-agent-browser': 3.972.10
@@ -2367,7 +2371,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-bedrock@3.1041.0':
+  '@aws-sdk/client-bedrock@3.1042.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -2378,7 +2382,7 @@ snapshots:
       '@aws-sdk/middleware-recursion-detection': 3.972.11
       '@aws-sdk/middleware-user-agent': 3.972.38
       '@aws-sdk/region-config-resolver': 3.972.13
-      '@aws-sdk/token-providers': 3.1041.0
+      '@aws-sdk/token-providers': 3.1042.0
       '@aws-sdk/types': 3.973.8
       '@aws-sdk/util-endpoints': 3.996.8
       '@aws-sdk/util-user-agent-browser': 3.972.10
@@ -2763,6 +2767,18 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
+  '@aws-sdk/token-providers@3.1042.0':
+    dependencies:
+      '@aws-sdk/core': 3.974.8
+      '@aws-sdk/nested-clients': 3.997.6
+      '@aws-sdk/types': 3.973.8
+      '@smithy/property-provider': 4.3.1
+      '@smithy/shared-ini-file-loader': 4.5.1
+      '@smithy/types': 4.14.1
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - aws-crt
+
   '@aws-sdk/types@3.973.8':
     dependencies:
       '@smithy/types': 4.14.1
@@ -2834,14 +2850,14 @@ snapshots:
 
   '@borewit/text-codec@0.2.2': {}
 
-  '@clack/core@1.3.0':
+  '@clack/core@1.3.1':
     dependencies:
       fast-wrap-ansi: 0.2.0
       sisteransi: 1.0.5
 
-  '@clack/prompts@1.3.0':
+  '@clack/prompts@1.4.0':
     dependencies:
-      '@clack/core': 1.3.0
+      '@clack/core': 1.3.1
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.0
       sisteransi: 1.0.5
@@ -2850,8 +2866,8 @@ snapshots:
     dependencies:
       google-auth-library: 10.6.2
       p-retry: 4.6.2
-      protobufjs: 7.5.7
-      ws: 8.20.0
+      protobufjs: 7.5.8
+      ws: 8.20.1
     optionalDependencies:
       '@modelcontextprotocol/sdk': 1.29.0(zod@4.4.3)
     transitivePeerDependencies:
@@ -2964,9 +2980,9 @@ snapshots:
       std-env: 3.10.0
       yoctocolors: 2.1.2
 
-  '@mariozechner/pi-agent-core@0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)':
+  '@mariozechner/pi-agent-core@0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)':
     dependencies:
-      '@mariozechner/pi-ai': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
+      '@mariozechner/pi-ai': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
       typebox: 1.1.37
     transitivePeerDependencies:
       - '@modelcontextprotocol/sdk'
@@ -2977,14 +2993,14 @@ snapshots:
       - ws
       - zod
 
-  '@mariozechner/pi-ai@0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)':
+  '@mariozechner/pi-ai@0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)':
     dependencies:
       '@anthropic-ai/sdk': 0.91.1(zod@4.4.3)
-      '@aws-sdk/client-bedrock-runtime': 3.1041.0
+      '@aws-sdk/client-bedrock-runtime': 3.1042.0
       '@google/genai': 1.52.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))
       '@mistralai/mistralai': 2.2.1
       chalk: 5.6.2
-      openai: 6.26.0(ws@8.20.0)(zod@4.4.3)
+      openai: 6.26.0(ws@8.20.1)(zod@4.4.3)
       partial-json: 0.1.7
       proxy-agent: 6.5.0
       typebox: 1.1.37
@@ -2999,12 +3015,12 @@ snapshots:
       - ws
       - zod
 
-  '@mariozechner/pi-coding-agent@0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)':
+  '@mariozechner/pi-coding-agent@0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)':
     dependencies:
       '@mariozechner/jiti': 2.6.5
-      '@mariozechner/pi-agent-core': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
-      '@mariozechner/pi-ai': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
-      '@mariozechner/pi-tui': 0.71.1
+      '@mariozechner/pi-agent-core': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
+      '@mariozechner/pi-ai': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
+      '@mariozechner/pi-tui': 0.73.0
       '@silvia-odwyer/photon-node': 0.3.4
       chalk: 5.6.2
       cli-highlight: 2.1.11
@@ -3033,7 +3049,7 @@ snapshots:
       - ws
       - zod
 
-  '@mariozechner/pi-tui@0.71.1':
+  '@mariozechner/pi-tui@0.73.0':
     dependencies:
       '@types/mime-types': 2.1.4
       chalk: 5.6.2
@@ -3045,7 +3061,7 @@ snapshots:
 
   '@mistralai/mistralai@2.2.1':
     dependencies:
-      ws: 8.20.0
+      ws: 8.20.1
       zod: 4.4.3
       zod-to-json-schema: 3.25.2(zod@4.4.3)
     transitivePeerDependencies:
@@ -3191,7 +3207,7 @@ snapshots:
       '@types/node': 25.7.0
       '@types/ws': 8.18.1
       eventemitter3: 5.0.4
-      ws: 8.20.0
+      ws: 8.20.1
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -4389,7 +4405,7 @@ snapshots:
   node-edge-tts@1.2.10:
     dependencies:
       https-proxy-agent: 7.0.6
-      ws: 8.20.0
+      ws: 8.20.1
       yargs: 17.7.2
     transitivePeerDependencies:
       - bufferutil
@@ -4426,35 +4442,35 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@6.26.0(ws@8.20.0)(zod@4.4.3):
+  openai@6.26.0(ws@8.20.1)(zod@4.4.3):
     optionalDependencies:
-      ws: 8.20.0
+      ws: 8.20.1
       zod: 4.4.3
 
-  openai@6.37.0(ws@8.20.0)(zod@4.4.3):
+  openai@6.37.0(ws@8.20.1)(zod@4.4.3):
     optionalDependencies:
-      ws: 8.20.0
+      ws: 8.20.1
       zod: 4.4.3
 
-  openclaw@2026.5.3(@types/express@5.0.6):
+  openclaw@2026.5.4(@types/express@5.0.6):
     dependencies:
       '@agentclientprotocol/sdk': 0.21.0(zod@4.4.3)
-      '@anthropic-ai/sdk': 0.92.0(zod@4.4.3)
+      '@anthropic-ai/sdk': 0.93.0(zod@4.4.3)
       '@anthropic-ai/vertex-sdk': 0.16.0(zod@4.4.3)
-      '@aws-sdk/client-bedrock': 3.1041.0
-      '@aws-sdk/client-bedrock-runtime': 3.1041.0
+      '@aws-sdk/client-bedrock': 3.1042.0
+      '@aws-sdk/client-bedrock-runtime': 3.1042.0
       '@aws-sdk/credential-provider-node': 3.972.39
       '@aws/bedrock-token-generator': 1.1.0
-      '@clack/prompts': 1.3.0
+      '@clack/prompts': 1.4.0
       '@google/genai': 1.52.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))
       '@grammyjs/runner': 2.0.3(grammy@1.42.0)
       '@grammyjs/transformer-throttler': 1.2.1(grammy@1.42.0)
       '@homebridge/ciao': 1.3.8
       '@lydell/node-pty': 1.2.0-beta.12
-      '@mariozechner/pi-agent-core': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
-      '@mariozechner/pi-ai': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
-      '@mariozechner/pi-coding-agent': 0.71.1(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.0)(zod@4.4.3)
-      '@mariozechner/pi-tui': 0.71.1
+      '@mariozechner/pi-agent-core': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
+      '@mariozechner/pi-ai': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
+      '@mariozechner/pi-coding-agent': 0.73.0(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(ws@8.20.1)(zod@4.4.3)
+      '@mariozechner/pi-tui': 0.73.0
       '@modelcontextprotocol/sdk': 1.29.0(zod@4.4.3)
       '@mozilla/readability': 0.6.0
       '@slack/bolt': 4.7.2(@types/express@5.0.6)
@@ -4479,7 +4495,7 @@ snapshots:
       markdown-it: 14.1.1
       minimatch: 10.2.5
       node-edge-tts: 1.2.10
-      openai: 6.37.0(ws@8.20.0)(zod@4.4.3)
+      openai: 6.37.0(ws@8.20.1)(zod@4.4.3)
       openshell: 0.1.0
       pdfjs-dist: 5.7.284
       playwright-core: 1.59.1
@@ -4490,10 +4506,10 @@ snapshots:
       tree-sitter-bash: 0.25.1
       tslog: 4.10.2
       typebox: 1.1.37
-      undici: 8.1.0
+      undici: 8.2.0
       web-push: 3.6.7
       web-tree-sitter: 0.26.8
-      ws: 8.20.0
+      ws: 8.20.1
       yaml: 2.9.0
       zod: 4.4.3
     optionalDependencies:
@@ -4630,7 +4646,7 @@ snapshots:
       retry: 0.12.0
       signal-exit: 3.0.7
 
-  protobufjs@7.5.7:
+  protobufjs@7.5.8:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -4988,7 +5004,7 @@ snapshots:
 
   undici@7.25.0: {}
 
-  undici@8.1.0: {}
+  undici@8.2.0: {}
 
   unpipe@1.0.0: {}
 
@@ -5041,7 +5057,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.20.0: {}
+  ws@8.20.1: {}
 
   xml-naming@0.1.0: {}
 
