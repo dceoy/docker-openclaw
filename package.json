@@ -5,6 +5,6 @@
   "description": "Docker wrapper for the published OpenClaw package",
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
-    "openclaw": "2026.5.12"
+    "openclaw": "2026.5.18"
   }
 }
